@@ -8,15 +8,13 @@ export default function Home({ products }) {
     <div className="bg-gray-100">
       <Head>
         <title>Bugg Off</title>
-        
       </Head>
 
-      
       <Header />
 
-      <main className="max-w-screen-2xl mx-auto" >
+      <main className="max-w-screen-2xl mx-auto">
         <Banner />
-        
+
         <ProductFeed products={products} />
       </main>
     </div>
@@ -24,12 +22,18 @@ export default function Home({ products }) {
 }
 
 export async function getServerSideProps(context) {
-  const products = await fetch("https://fakestoreapi.com/products").then(
-    (res) => res.json());
+  const res = await fetch("https://fakestoreapi.com/products");
+  const products = await res.json();
+
+  // Modify the products array to include the image URLs
+  const productsWithImages = products.map((product) => ({
+    ...product,
+    image: product.image.replace("http://", "https://"),
+  }));
 
   return {
     props: {
-      products,
+      products: productsWithImages,
     },
   };
 }
